@@ -38,14 +38,10 @@ pipeline {
             }
         }
 
-        stage ('Test'){
+        stage ('Test Stage') {
             steps {
                 sh '''
                     ls -l build/index.html
-                '''
-            }
-            steps {
-                sh '''
                     npm test
                 '''
             }
