@@ -38,6 +38,19 @@ pipeline {
             }
         }
 
+        stage ('Test'){
+            steps {
+                sh '''
+                    ls -l build/index.html
+                '''
+            }
+            steps {
+                sh '''
+                    npm test
+                '''
+            }
+        }
+
         stage('Archive Build Artifacts') {
             when {
                 expression { fileExists('dist') } // Assuming your build output is in /dist
