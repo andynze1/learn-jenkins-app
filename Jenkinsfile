@@ -19,14 +19,19 @@ pipeline {
                 sh '''
                     echo "📁 Listing files before build"
                     ls -la
+
                     echo "🧾 Node version:"
                     node --version
+
                     echo "🧾 NPM version:"
                     npm --version
+
                     echo "📦 Installing dependencies..."
                     npm ci
+
                     echo "🏗️ Building the app..."
                     npm run build
+                    
                     echo "📁 Listing files after build"
                     ls -la
                 '''
