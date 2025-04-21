@@ -85,7 +85,7 @@ pipeline {
                     node_modules/.bin/serve -s build  & 
                     sleep 10
                     echo "🚀 Running Playwright E2E tests..."
-                    npx playwright test
+                    npx playwright test --reporter=html
 
                     echo "📁 Listing test output..."
                     ls -la test-results/
