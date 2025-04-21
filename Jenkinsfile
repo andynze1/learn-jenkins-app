@@ -48,13 +48,6 @@ pipeline {
             steps {
                 sh '''
                     test -f build/index.html
-                '''
-                script {
-                    if (!fileExists('build/index.html')) {
-                        echo '⚠️ Warning: build/index.html does not exist.'
-                    }
-                }
-                sh '''
                     echo "✅ Running tests..."
                     npm test || echo "⚠️ Tests failed or not configured."
                 '''
