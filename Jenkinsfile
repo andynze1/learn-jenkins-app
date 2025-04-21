@@ -11,7 +11,6 @@ pipeline {
             }
             steps {
                 script {
-                    // Check if package.json exists
                     if (!fileExists('package.json')) {
                         error("package.json not found. Cannot proceed with npm build.")
                     }
@@ -37,7 +36,8 @@ pipeline {
                 '''
             }
         }
-        stage('Test Stage') {
+
+        stage('Unit Test Stage') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -47,8 +47,33 @@ pipeline {
             steps {
                 sh '''
                     test -f build/index.html
-                    echo "✅ Running tests..."
+                    echo "✅ Running unit tests..."
                     npm test || echo "⚠️ Tests failed or not configured."
+                '''
+            }
+        }
+
+        stage('E2E Test Stage - Playwright') {
+            agent {
+                docker {
+                    // ✅ Use Microsoft’s official Playwright image with browsers pre-installed
+                    image 'mcr.microsoft.com/playwright:v1.42.1-jammy'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    echo "📦 Installing dependencies (including Playwright)..."
+                    npm ci
+
+                    echo "🎭 Installing Playwright browsers..."
+                    npx playwright install --with-deps
+
+                    echo "🚀 Running Playwright E2E tests..."
+                    npx playwright test --reporter=junit
+
+                    echo "📁 Listing test output..."
+                    ls -la test-results/
                 '''
             }
         }
@@ -69,7 +94,8 @@ pipeline {
 
     post {
         always {
-            junit 'test-results/junit.xml'
+            // ✅ Collect Playwright JUnit test results
+            junit 'test-results/*.xml'
         }
         failure {
             echo '❌ Build failed. Please check the logs.'
@@ -79,8 +105,3 @@ pipeline {
         }
     }
 }
-
-/* This
-    is a
-    comment
-*/
