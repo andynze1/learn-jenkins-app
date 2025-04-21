@@ -43,7 +43,7 @@ pipeline {
                 docker {
                     image 'node:18-alpine'
                     reuseNode true
-        }
+                }
             }
             steps {
                 script {
@@ -59,14 +59,17 @@ pipeline {
         }
 
         stage('Archive Build Artifacts') {
-            when {
-                expression { fileExists('dist') } // Assuming your build output is in /dist
-            }
-            steps {
+    steps {
+        script {
+            if (fileExists('build')) {
                 echo '📦 Archiving build artifacts...'
-                archiveArtifacts artifacts: 'dist/**', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
+            } else {
+                echo '⚠️ Build directory not found. Skipping archive.'
             }
         }
+    }
+}
     }
 
     post {
