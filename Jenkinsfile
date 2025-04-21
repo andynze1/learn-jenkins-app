@@ -66,9 +66,6 @@ pipeline {
                     echo "📦 Installing dependencies (including Playwright)..."
                     npm ci
 
-                    echo "🎭 Installing Playwright browsers..."
-                    npx playwright install --with-deps
-
                     echo "🚀 Running Playwright E2E tests..."
                     npx playwright test --reporter=junit
 
