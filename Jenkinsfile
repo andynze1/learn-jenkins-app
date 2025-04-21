@@ -63,7 +63,7 @@ pipeline {
             steps {
                 sh '''
                     npm ci
-                    npm install -g serve
+                    npm install serve
                     node_modules/.bin/serve -s build
                     npx playwright test
                 '''
@@ -81,7 +81,7 @@ pipeline {
         //         sh '''
         //             echo "📦 Installing dependencies (including Playwright)..."
         //             npm ci
-        //             npm install -g serve
+        //             npm install serve
         //             node_modules/.bin/serve -s build
         //             echo "🚀 Running Playwright E2E tests..."
         //             npx playwright test
