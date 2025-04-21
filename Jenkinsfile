@@ -109,10 +109,10 @@ pipeline {
     }
 
     post {
-        always {
-            // ✅ Collect Playwright JUnit test results
-            junit 'test-results/*.xml'
-        }
+        // always {
+        //     // ✅ Collect Playwright JUnit test results
+        //     junit 'test-results/*.xml'
+        // }
         failure {
             echo '❌ Build failed. Please check the logs.'
         }
