@@ -112,6 +112,7 @@ pipeline {
         always {
             // ✅ Collect Playwright JUnit test results
             junit 'jest-results/*.xml'
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
         }
         failure {
             echo '❌ Build failed. Please check the logs.'
