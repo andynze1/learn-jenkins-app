@@ -53,6 +53,20 @@ pipeline {
             }
         }
 
+
+
+        stage('Archive Build Artifacts') {
+            steps {
+                script {
+                    if (fileExists('build')) {
+                        echo '📦 Archiving build artifacts...'
+                        archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
+                    } else {
+                        echo '⚠️ Build directory not found. Skipping archive.'
+                    }
+                }
+            }
+        }
         stage('E2E Test Stage - Playwright') {
             agent {
                 docker {
@@ -72,19 +86,6 @@ pipeline {
                     echo "📁 Listing test output..."
                     ls -la test-results/
                 '''
-            }
-        }
-
-        stage('Archive Build Artifacts') {
-            steps {
-                script {
-                    if (fileExists('build')) {
-                        echo '📦 Archiving build artifacts...'
-                        archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
-                    } else {
-                        echo '⚠️ Build directory not found. Skipping archive.'
-                    }
-                }
             }
         }
     }
