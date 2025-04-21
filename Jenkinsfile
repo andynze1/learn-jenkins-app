@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Build Stage') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -46,6 +46,9 @@ pipeline {
                 }
             }
             steps {
+                sh '''
+                    test -f build/index.html
+                '''
                 script {
                     if (!fileExists('build/index.html')) {
                         echo '⚠️ Warning: build/index.html does not exist.'
@@ -59,17 +62,17 @@ pipeline {
         }
 
         stage('Archive Build Artifacts') {
-    steps {
-        script {
-            if (fileExists('build')) {
-                echo '📦 Archiving build artifacts...'
-                archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
-            } else {
-                echo '⚠️ Build directory not found. Skipping archive.'
+            steps {
+                script {
+                    if (fileExists('build')) {
+                        echo '📦 Archiving build artifacts...'
+                        archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
+                    } else {
+                        echo '⚠️ Build directory not found. Skipping archive.'
+                    }
+                }
             }
         }
-    }
-}
     }
 
     post {
