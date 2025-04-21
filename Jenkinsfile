@@ -67,7 +67,7 @@ pipeline {
                     npm ci
 
                     echo "🚀 Running Playwright E2E tests..."
-                    npx playwright test
+                    npx playwright test --reporter=junit:test-results/*.xml
 
                     echo "📁 Listing test output..."
                     ls -la test-results/
