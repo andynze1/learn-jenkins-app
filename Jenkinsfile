@@ -69,6 +69,9 @@ pipeline {
     }
 
     post {
+        always {
+            junit 'test-results/junit.xml'
+        }
         failure {
             echo '❌ Build failed. Please check the logs.'
         }
