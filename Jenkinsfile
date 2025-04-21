@@ -52,8 +52,45 @@ pipeline {
                 '''
             }
         }
+        stage('E2E Stage') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+     //               args '-u root:root'
+                }
+            }
+            steps {
+                sh '''
+                    npm ci
+                    npm install -g serve
+                    node_module/.bin/serve -s build
+                    npx playwright test
+                '''
+            }
+        }
 
+     // stage('E2E Test Stage - Playwright') {
+        //     agent {
+        //         docker {
+        //             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+        //             reuseNode true
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             echo "📦 Installing dependencies (including Playwright)..."
+        //             npm ci
+        //             npm install -g serve
+        //             node_module/.bin/serve -s build
+        //             echo "🚀 Running Playwright E2E tests..."
+        //             npx playwright test
 
+        //             echo "📁 Listing test output..."
+        //             ls -la test-results/
+        //         '''
+        //     }
+        // }
 
         stage('Archive Build Artifacts') {
             steps {
@@ -67,27 +104,7 @@ pipeline {
                 }
             }
         }
-        // stage('E2E Test Stage - Playwright') {
-        //     agent {
-        //         docker {
-        //             // ✅ Use Microsoft’s official Playwright image with browsers pre-installed
-        //             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-        //             reuseNode true
-        //         }
-        //     }
-        //     steps {
-        //         sh '''
-        //             echo "📦 Installing dependencies (including Playwright)..."
-        //             npm ci
-
-        //             echo "🚀 Running Playwright E2E tests..."
-        //             npx playwright test --reporter=junit:test-results/junit.xml
-
-        //             echo "📁 Listing test output..."
-        //             ls -la test-results/
-        //         '''
-        //     }
-        // }
+   
     }
 
     post {
