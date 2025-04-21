@@ -57,7 +57,7 @@ pipeline {
             agent {
                 docker {
                     // ✅ Use Microsoft’s official Playwright image with browsers pre-installed
-                    image 'mcr.microsoft.com/playwright:v1.42.1-jammy'
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                     reuseNode true
                 }
             }
@@ -67,7 +67,7 @@ pipeline {
                     npm ci
 
                     echo "🚀 Running Playwright E2E tests..."
-                    npx playwright test --reporter=junit
+                    npx playwright test --reporter=junit:test-results/results.xml
 
                     echo "📁 Listing test output..."
                     ls -la test-results/
