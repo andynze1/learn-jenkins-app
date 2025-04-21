@@ -39,6 +39,12 @@ pipeline {
         }
 
         stage('Test Stage') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+        }
+            }
             steps {
                 script {
                     if (!fileExists('build/index.html')) {
