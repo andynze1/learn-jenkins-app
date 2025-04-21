@@ -47,7 +47,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    test -f build/index.html
+                    test -f build/index.htmll
                 '''
                 script {
                     if (!fileExists('build/index.html')) {
