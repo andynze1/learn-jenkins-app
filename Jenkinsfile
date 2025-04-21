@@ -37,7 +37,7 @@ pipeline {
             }
         }
 
-    stage ('Tests')
+    stage ('Tests') {
         parallel {
             stage('Unit Test') {
                 agent {
@@ -77,7 +77,7 @@ pipeline {
                 }
             }
         }
-
+    }
         stage('Archive Build Artifacts') {
             steps {
                 script {
