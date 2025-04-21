@@ -82,7 +82,8 @@ pipeline {
                     echo "📦 Installing dependencies (including Playwright)..."
                     npm ci
                     npm install serve
-                    node_modules/.bin/serve -s build
+                    node_modules/.bin/serve -s build  & 
+                    sleep 10
                     echo "🚀 Running Playwright E2E tests..."
                     npx playwright test
 
