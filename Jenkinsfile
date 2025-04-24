@@ -53,6 +53,12 @@ pipeline {
                         npm test || echo "⚠️ Tests failed or not configured."
                     '''
                 }
+                post {
+                    always {
+                        // ✅ Collect Playwright JUnit test results
+                        junit 'jest-results/*.xml'
+                    }
+                }
             }
             stage('E2E Playwright') {
                 agent {
@@ -75,6 +81,12 @@ pipeline {
                         ls -la test-results/
                     '''
                 }
+                post {
+                    always {
+                        // ✅ Collect Playwright JUnit test results
+                        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                    }
+                }
             }
         }
     }
@@ -94,11 +106,12 @@ pipeline {
     }
 
     post {
-        always {
+       /* always {
             // ✅ Collect Playwright JUnit test results
             junit 'jest-results/*.xml'
             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-        }
+        } */  
+
         failure {
             echo '❌ Build failed. Please check the logs.'
         }
