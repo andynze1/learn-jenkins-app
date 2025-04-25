@@ -2,6 +2,33 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                echo '🔄 Checking out source code...'
+                checkout scm
+            }
+        }
+
+        stage('Static Code Analysis') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    echo "🔍 Running ESLint for static analysis..."
+                    npm ci
+                    if [ -f .eslintrc.js ] || [ -f .eslintrc.json ]; then
+                      npx eslint . || echo "⚠️ Lint warnings found."
+                    else
+                      echo "⚠️ ESLint config not found. Skipping linting."
+                    fi
+                '''
+            }
+        }
+
         stage('Build') {
             agent {
                 docker {
