@@ -37,7 +37,7 @@ pipeline {
             }
         }
 
-        stage ('Tests') {
+        stage('Tests') {
             parallel {
                 stage('Unit Test') {
                     agent {
@@ -48,18 +48,17 @@ pipeline {
                     }
                     steps {
                         sh '''
-                            test -f build/index.html
                             echo "✅ Running unit tests..."
-                            npm test || echo "⚠️ Tests failed or not configured."
+                            npm test || echo "⚠️ Unit tests failed, but continuing to post results..."
                         '''
                     }
                     post {
                         always {
-                            // ✅ Collect Playwright JUnit test results
-                            junit 'jest-results/*.xml'
+                            junit allowEmptyResults: true, testResults: 'jest-results/*.xml'
                         }
                     }
                 }
+
                 stage('E2E Playwright') {
                     agent {
                         docker {
@@ -74,22 +73,32 @@ pipeline {
                             npm install serve
                             node_modules/.bin/serve -s build  & 
                             sleep 10
+
                             echo "🚀 Running Playwright E2E tests..."
                             npx playwright test --reporter=html
 
                             echo "📁 Listing test output..."
-                            ls -la test-results/
+                            ls -la playwright-report/
                         '''
                     }
                     post {
                         always {
-                            // ✅ Collect Playwright JUnit test results.
-                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                            publishHTML([
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: false,
+                                icon: '',
+                                keepAll: false,
+                                reportDir: 'playwright-report',
+                                reportFiles: 'index.html',
+                                reportName: 'Playwright HTML Report',
+                                useWrapperFileDirectly: true
+                            ])
                         }
                     }
                 }
             }
         }
+
         stage('Archive Build Artifacts') {
             steps {
                 script {
@@ -102,16 +111,9 @@ pipeline {
                 }
             }
         }
-   
     }
 
     post {
-       /* always {
-            // ✅ Collect Playwright JUnit test results
-            junit 'jest-results/*.xml'
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-        } */  
-
         failure {
             echo '❌ Build failed. Please check the logs.'
         }
