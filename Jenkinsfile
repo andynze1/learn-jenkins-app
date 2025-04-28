@@ -125,7 +125,25 @@ pipeline {
                 }
             }
         }
-
+        stage('Deploy') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                script {
+                    if (!fileExists('package.json')) {
+                        error("package.json not found. Cannot proceed with npm build.")
+                    }
+                }
+                sh '''
+                    npm install netlify-cli
+                    node_modules/.bin/netlify --version
+                '''
+            }
+        }
         stage('Archive Build Artifacts') {
             steps {
                 script {
