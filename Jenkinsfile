@@ -47,7 +47,7 @@ pipeline {
                     }
                 }
                 sh '''
-                    echo 'Small change"
+                    echo 'Small change'
                     node --version
                     npm --version
                     npm ci
