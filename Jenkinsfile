@@ -47,22 +47,10 @@ pipeline {
                     }
                 }
                 sh '''
-                    echo "📁 Listing files before build"
-                    ls -la
-
-                    echo "🧾 Node version:"
                     node --version
-
-                    echo "🧾 NPM version:"
                     npm --version
-
-                    echo "📦 Installing dependencies..."
                     npm ci
-
-                    echo "🏗️ Building the app..."
                     npm run build
-                    
-                    echo "📁 Listing files after build"
                     ls -la
                 '''
             }
@@ -159,6 +147,7 @@ pipeline {
                     node_modules/.bin/netlify --version
                     echo "Deploying to Production Site ID $NETLIFY_SITE_ID"
                     node_modules/.bin/netlify status
+                    node_modules/.bin/netlify deploy --dir=build --prod
                 '''
             }
         }
