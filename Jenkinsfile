@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         NETLIFY_SITE_ID = '3e4b59b5-5c89-4f0e-acc1-016e330a2746'
+        NETLIFY_AUTH_TOKEN = credentials('Netlify-Token')
     }
 
     stages {
@@ -128,6 +129,18 @@ pipeline {
                 }
             }
         }
+        stage('Archive Build Artifacts') {
+            steps {
+                script {
+                    if (fileExists('build')) {
+                        echo '📦 Archiving build artifacts...'
+                        archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
+                    } else {
+                        echo '⚠️ Build directory not found. Skipping archive.'
+                    }
+                }
+            }
+        }
         stage('Deploy') {
             agent {
                 docker {
@@ -145,19 +158,8 @@ pipeline {
                     npm install netlify-cli
                     node_modules/.bin/netlify --version
                     echo "Deploying to Production Site ID $NETLIFY_SITE_ID"
+                    node_modules/.bin/netlify status
                 '''
-            }
-        }
-        stage('Archive Build Artifacts') {
-            steps {
-                script {
-                    if (fileExists('build')) {
-                        echo '📦 Archiving build artifacts...'
-                        archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
-                    } else {
-                        echo '⚠️ Build directory not found. Skipping archive.'
-                    }
-                }
             }
         }
     }
