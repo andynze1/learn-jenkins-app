@@ -110,7 +110,7 @@ pipeline {
                                 keepAll: false,
                                 reportDir: 'playwright-report',
                                 reportFiles: 'index.html',
-                                reportName: 'Playwright HTML Local',
+                                reportName: 'Playwright Local',
                                 useWrapperFileDirectly: true
                             ])
                         }
